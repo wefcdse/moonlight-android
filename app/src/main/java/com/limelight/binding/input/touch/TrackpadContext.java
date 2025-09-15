@@ -6,6 +6,7 @@ import android.os.Looper;
 import com.limelight.LimeLog;
 import com.limelight.nvstream.NvConnection;
 import com.limelight.nvstream.input.MouseButtonPacket;
+import com.limelight.nvstream.jni.MoonBridge;
 
 public class TrackpadContext implements TouchContext {
     private double pendingDeltaX = 0;
@@ -55,6 +56,7 @@ public class TrackpadContext implements TouchContext {
         this.conn = conn;
         this.actionIndex = actionIndex;
         this.handler = new Handler(Looper.getMainLooper());
+        conn.send
     }
 
     public TrackpadContext(NvConnection conn, int actionIndex, boolean swapAxis, int sensitivityX, int sensitivityY) {

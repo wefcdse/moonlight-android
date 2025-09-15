@@ -16,6 +16,7 @@ import org.jcodec.codecs.h264.io.model.VUIParameters;
 import com.limelight.BuildConfig;
 import com.limelight.LimeLog;
 import com.limelight.R;
+import com.limelight.binding.Debuging;
 import com.limelight.nvstream.av.video.VideoDecoderRenderer;
 import com.limelight.nvstream.jni.MoonBridge;
 import com.limelight.preferences.PreferenceConfiguration;
@@ -1791,6 +1792,8 @@ public class MediaCodecDecoderRenderer extends VideoDecoderRenderer implements C
                 float decodeTimeMs = (float)lastTwo.decoderTimeMs / lastTwo.totalFramesReceived;
                 long rttInfo = MoonBridge.getEstimatedRttInfo();
                 StringBuilder sb = new StringBuilder();
+                sb.append(Debuging.info);
+                Debuging.runned = true;
                 if(prefs.enablePerfOverlayLite){
                     if(TrafficStatsHelper.getPackageRxBytes(Process.myUid()) != TrafficStats.UNSUPPORTED){
                         long netData=TrafficStatsHelper.getPackageRxBytes(Process.myUid())+TrafficStatsHelper.getPackageTxBytes(Process.myUid());

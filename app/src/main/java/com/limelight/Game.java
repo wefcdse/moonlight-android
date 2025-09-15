@@ -8,6 +8,7 @@ import static com.limelight.utils.ExternalDisplayControlActivity.closeExternalDi
 import static com.limelight.utils.ServerHelper.getActiveDisplay;
 import static com.limelight.utils.ServerHelper.getSecondaryDisplay;
 
+import com.limelight.binding.Debuging;
 import com.limelight.binding.PlatformBinding;
 import com.limelight.binding.audio.AndroidAudioRenderer;
 import com.limelight.binding.input.ControllerHandler;
@@ -3121,6 +3122,23 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
     private boolean handleTouchInput(MotionEvent event, TouchContext[] inputContextMap, boolean isTouchScreen, int eventAction, int actionIndex, int pointerCount) {
         int actualActionIndex = event.getActionIndex();
         int actualPointerCount = event.getPointerCount();
+        Debuging.clean();
+        Debuging.info += "point count " + actualPointerCount + " idx " + actualActionIndex + "\n";
+        Debuging.maxIdx = Math.max(Debuging.maxIdx, actualActionIndex);
+        Debuging.info += "max idx " + Debuging.maxIdx + "\n";
+        Debuging.info += "device " + event.getDevice().getName() + "\n";
+        if(Debuging.runned){
+            Debuging.runned = false;
+            conn.sendUtf8Text("hello");
+        }
+
+        for (int i = 0; i < actualPointerCount; i++){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Debuging.info += "pointer" + i + " ";
+                Debuging.info += event.getRawX(i) + " ";
+                Debuging.info += event.getRawY(i) + "\n";
+            }
+        }
 
         boolean shouldDuplicateMovement = actualPointerCount < pointerCount;
 
