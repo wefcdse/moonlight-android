@@ -16,6 +16,7 @@ import com.limelight.binding.input.KeyboardTranslator;
 import com.limelight.binding.input.capture.InputCaptureManager;
 import com.limelight.binding.input.capture.InputCaptureProvider;
 import com.limelight.binding.input.touch.AbsoluteTouchContext;
+import com.limelight.binding.input.touch.Debug;
 import com.limelight.binding.input.touch.RelativeTouchContext;
 import com.limelight.binding.input.driver.UsbDriverService;
 import com.limelight.binding.input.evdev.EvdevListener;
@@ -113,6 +114,7 @@ import androidx.preference.PreferenceManager;
 
 import android.os.Looper;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -3143,13 +3145,16 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
         {
             case MotionEvent.ACTION_POINTER_DOWN:
             case MotionEvent.ACTION_DOWN:
+                Debug.format("ACTION DOWN {0} {1}\n", event.getPointerCount(), event.getActionIndex());
                 for (TouchContext touchContext : inputContextMap) {
                     touchContext.setPointerCount(pointerCount);
+                    touchContext.setActualPointerCount(actualPointerCount);
                 }
                 context.touchDownEvent(eventX, eventY, event.getEventTime(), true);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
             case MotionEvent.ACTION_UP:
+                Debug.format("ACTION UP {0} {1}\n", event.getPointerCount(), event.getActionIndex());
                 //是触控板模式 三点呼出软键盘
                 if(prefConfig.touchscreenTrackpad){
                     if (pointerCount == 1 &&
@@ -3180,6 +3185,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
 
                 for (TouchContext touchContext : inputContextMap) {
                     touchContext.setPointerCount(pointerCount - 1);
+                    touchContext.setActualPointerCount(actualPointerCount);
                 }
                 if (actionIndex == 0 && pointerCount > 1 && !context.isCancelled()) {
                     // The original secondary touch now becomes primary
@@ -3197,6 +3203,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
+                Debug.format("ACTION MOVE {0} {1}\n", event.getPointerCount(), event.getActionIndex());
                 // ACTION_MOVE is special because it always has actionIndex == 0
                 // We'll call the move handlers for all indexes manually
 
@@ -3213,6 +3220,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
                                 historicalX = (int)normalizedCoords[0];
                                 historicalY = (int)normalizedCoords[1];
                             }
+                            aTouchContextMap.setActualPointerCount(actualPointerCount);
                             aTouchContextMap.touchMoveEvent(
                                     historicalX,
                                     historicalY,
@@ -3233,6 +3241,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
                             currentX = (int)normalizedCoords[0];
                             currentY = (int)normalizedCoords[1];
                         }
+                        aTouchContextMap.setActualPointerCount(actualPointerCount);
                         aTouchContextMap.touchMoveEvent(
                                 currentX,
                                 currentY,
@@ -3241,9 +3250,11 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
+                Debug.format("ACTION CANCEL {0} {1}\n", event.getPointerCount(), event.getActionIndex());
                 for (TouchContext aTouchContext : inputContextMap) {
                     aTouchContext.cancelTouch();
                     aTouchContext.setPointerCount(0);
+                    aTouchContext.setActualPointerCount(0);
                 }
                 break;
             default:
@@ -3309,6 +3320,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
         for (TouchContext aTouchContext : touchContextMap) {
             aTouchContext.cancelTouch();
             aTouchContext.setPointerCount(0);
+            aTouchContext.setActualPointerCount(0);
         }
     }
 
