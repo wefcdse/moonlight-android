@@ -3150,6 +3150,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
                     touchContext.setPointerCount(pointerCount);
                     touchContext.setActualPointerCount(actualPointerCount);
                 }
+                context.setActualPointerCount(actualPointerCount);
                 context.touchDownEvent(eventX, eventY, event.getEventTime(), true);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
@@ -3180,6 +3181,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
                     context.cancelTouch();
                 }
                 else {
+                    context.setActualPointerCount(actualPointerCount);
                     context.touchUpEvent(eventX, eventY, event.getEventTime());
                 }
 
@@ -3196,6 +3198,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
                         pointer1X = (int)normalizedCoords[0];
                         pointer1Y = (int)normalizedCoords[1];
                     }
+                    context.setActualPointerCount(actualPointerCount);
                     context.touchDownEvent(
                             pointer1X,
                             pointer1Y,
@@ -3203,7 +3206,7 @@ public class Game extends AppCompatActivity implements SurfaceHolder.Callback,
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                Debug.format("ACTION MOVE {0} {1}\n", event.getPointerCount(), event.getActionIndex());
+//                Debug.format("ACTION MOVE {0} {1}\n", event.getPointerCount(), event.getActionIndex());
                 // ACTION_MOVE is special because it always has actionIndex == 0
                 // We'll call the move handlers for all indexes manually
 

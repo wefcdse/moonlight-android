@@ -260,8 +260,9 @@ public class TrackpadContext implements TouchContext {
         }
 
         byte buttonIndex = getMouseButtonIndex();
-
+        Debug.format("byte ");
         if (isDblClickPending) {
+            Debug.format("isDblClickPending ");
             handler.removeCallbacksAndMessages(null);
             conn.sendMouseButtonUp(buttonIndex);
             conn.sendMouseButtonDown(buttonIndex);
@@ -270,24 +271,30 @@ public class TrackpadContext implements TouchContext {
             confirmedDrag = false;
         }
         else if (confirmedDrag) {
+            Debug.format("confirmedDrag ");
             handler.removeCallbacksAndMessages(null);
 
             double speed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
             if (speed > FLICK_THRESHOLD) {
+                Debug.format("speed ");
                 isFlicking = true;
                 handler.post(momentumRunnable);
             } else {
+                Debug.format("speedElse ");
                 conn.sendMouseButtonUp(buttonIndex);
                 confirmedDrag = false;
             }
         }
         else if (isTap(eventTime)) {
+            Debug.format("isTap ");
             conn.sendMouseButtonDown(buttonIndex);
             isClickPending = true;
 
             handler.removeCallbacksAndMessages(null);
             handler.postDelayed(() -> {
+                Debug.format("postDelayed ");
                 if (isClickPending) {
+                    Debug.format("postDelayedisp ");
                     conn.sendMouseButtonUp(buttonIndex);
                     isClickPending = false;
                 }
@@ -295,6 +302,7 @@ public class TrackpadContext implements TouchContext {
             }, CLICK_RELEASE_DELAY);
         }
         else if (confirmedMove) {
+            Debug.format("confirmedMove ");
             // This was a move/scroll that wasn't a drag or tap. Let's see if we should flick.
             double speed = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
             if (speed > FLICK_THRESHOLD) {
@@ -440,6 +448,7 @@ public class TrackpadContext implements TouchContext {
 
     @Override
     public void setActualPointerCount(int pointerCount){
+//        Debug.format("Set pointerCount {0}", pointerCount);
         actualPointerCount = pointerCount;
         maxCount = Math.max(maxCount, pointerCount);
         Debug.maxCount = Math.max(Debug.maxCount, pointerCount);
